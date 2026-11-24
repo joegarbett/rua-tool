@@ -1,0 +1,8 @@
+# Build output
+/rua-tool
+/dist/
+
+# Runtime data
+/rua-findings.json
+/reports/
+*.log
