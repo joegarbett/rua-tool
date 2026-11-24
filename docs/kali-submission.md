@@ -54,9 +54,11 @@ and it never sends mail.
 
 [Dependencies]
 Runtime: none — a single static binary, no runtime dependencies.
-Build: Go toolchain (the module targets Go 1.26) and golang.org/x/net
-(Public Suffix List + HTML parser); packaged in Debian as
-golang-golang-x-net-dev.
+Build: a Go toolchain and golang.org/x/net (Public Suffix List + HTML parser),
+packaged in Debian as golang-golang-x-net-dev. The go.mod directive says Go 1.26
+(from the standalone x/net v0.63.0 pin), but the tool's own code builds with
+Go >= 1.22 against x/net as old as v0.25.0, so a GOPATH-mode dh-golang build
+against the distro's x/net does not need Go 1.26. See debian/README.source.
 
 [Similar tools]
 No direct equivalent focused on expired DMARC report-domain takeover plus
@@ -96,13 +98,34 @@ page (rua-tool.1). A tagged release (v0.1.0) is available as required.
 
 ## Notes for packaging (for the Kali maintainer / before an sbuild)
 
-- The `debian/` directory in this repo is an initial, syntactically-validated
-  starting point (`dpkg-parsechangelog` and `Dpkg::Control` parse cleanly). It
-  has **not** been through a full `sbuild`/`lintian` run — please validate on a
-  Kali builder.
+- The `debian/` directory **builds**: `dpkg-buildpackage -b` was run against
+  Debian's golang-go 1.22 (GOPATH mode) and `golang-golang-x-net-dev` 1:0.21.0,
+  producing a working PIE binary. `lintian` is clean apart from
+  `initial-upload-closes-no-bugs` (expected for a first package, ignorable for a
+  non-Debian target). Please still do a final `sbuild` + `lintian --profile
+  kali` on a Kali builder.
 - The module's `go.mod` targets **Go 1.26** (required by the current, CVE-free
-  `golang.org/x/net` v0.63.0). The `debian/rules` uses the dh golang buildsystem
-  so the build takes `x/net` from `golang-golang-x-net-dev` rather than the
-  network; confirm the builder's Go and that package satisfy it.
+  `golang.org/x/net` v0.63.0), but that floor does not apply here: `debian/rules`
+  uses the dh golang buildsystem, which builds in GOPATH mode against
+  `golang-golang-x-net-dev` and ignores `go.mod`. The code compiles with Go 1.22
+  and x/net 0.21.0, as the local build confirms.
 - A tagged upstream release (`v0.1.0`) exists, so no git-HEAD/`git clone`
   acquisition is needed (per the submission guidelines).
+
+## Build + lint the package before submitting (on Debian/Kali)
+
+`debian/` has been built and lint-checked locally; reproduce it on a Debian or
+Kali box with:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y build-essential debhelper dh-golang \
+  golang-go golang-golang-x-net-dev devscripts lintian
+
+# From a checkout at the v0.1.0 tag, with the debian/ directory present:
+dpkg-buildpackage -us -uc -b        # build the binary package
+lintian ../rua-tool_*_*.deb         # lint the result
+```
+
+Fixing any `lintian` findings (and confirming the build picks up the distro's
+`x/net`) before filing the request will smooth acceptance.

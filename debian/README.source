@@ -1,0 +1,37 @@
+rua-tool — notes for the Debian/Kali packager
+==============================================
+
+Go version
+----------
+The upstream go.mod declares `go 1.26.0`. That floor comes *only* from the
+pinned standalone dependency `golang.org/x/net v0.63.0` (the latest, CVE-free
+release), not from this tool's own code.
+
+rua-tool's own source uses no Go 1.23+ language features and only long-stable
+`x/net` APIs:
+  * golang.org/x/net/publicsuffix  — EffectiveTLDPlusOne
+  * golang.org/x/net/html          — NewTokenizer / Token / token kinds
+  * golang.org/x/net/idna          — Lookup.ToASCII
+
+It has been verified to compile with **Go 1.22** against **x/net as old as
+v0.25.0**. So when built the Debian way — in GOPATH mode against the packaged
+`golang-golang-x-net-dev` rather than the network-pinned module — the Go 1.26
+toolchain is not required; the distro's Go (>= 1.22) and its `x/net` suffice.
+This is why debian/control uses an unversioned `golang-any` build-dependency.
+
+If a module-mode build insists on the go.mod directive, either build in GOPATH
+mode or lower the directive for the package build; no source changes are needed.
+
+x/net version
+-------------
+The code does not depend on any `x/net` API newer than v0.25.0, so whatever
+version `golang-golang-x-net-dev` provides in the target suite will work.
+
+Validation status
+-----------------
+Built locally with `dpkg-buildpackage -b` using Debian's golang-go (1.22) in
+GOPATH mode against golang-golang-x-net-dev 1:0.21.0 (so neither Go 1.26 nor the
+pinned x/net was needed). lintian reports only `initial-upload-closes-no-bugs`
+(expected for a first package, ignorable for a non-Debian target); the binary is
+built with -buildmode=pie. Please still run a final sbuild + lintian on a Kali
+builder with the kali vendor profile; see docs/kali-submission.md.

@@ -6,3 +6,12 @@
 /rua-findings.json
 /reports/
 *.log
+
+# Debian build artifacts
+/_build/
+/debian/.debhelper/
+/debian/files
+/debian/*.substvars
+/debian/debhelper-build-stamp
+/debian/rua-tool/
+/debian/rua-tool.debhelper.log
