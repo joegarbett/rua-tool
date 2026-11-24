@@ -5,7 +5,8 @@ features, and docs — are welcome.
 
 ## Getting started
 
-Requires Go 1.22 or newer. The only external module is `golang.org/x/net`.
+Requires Go 1.26 or newer (older toolchains with the default `GOTOOLCHAIN=auto`
+fetch it automatically). The only external module is `golang.org/x/net`.
 
 ```bash
 git clone https://github.com/joegarbett/rua-tool

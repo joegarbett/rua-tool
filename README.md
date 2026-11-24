@@ -18,8 +18,14 @@ receivers to send reports to other addresses:
 v=DMARC1; p=reject; rua=mailto:aggregate@reports.example.net; ruf=mailto:forensics@example.net
 ```
 
-- **`rua`** — aggregate reports (who is sending mail as you, from where, and whether it passed SPF/DKIM/DMARC).
-- **`ruf`** — forensic/failure reports (can include message samples).
+- **`rua`** — **R**eporting **U**RI for **A**ggregate reports: where periodic
+  aggregate feedback is sent (who is sending mail as you, from where, and
+  whether it passed SPF/DKIM/DMARC). This tag is what the tool is named after.
+- **`ruf`** — **R**eporting **U**RI for **F**ailure (forensic) reports: per-message
+  failure reports, which can include message samples.
+
+(Both are defined in [RFC 7489](https://datatracker.ietf.org/doc/html/rfc7489);
+the `URI`s are `mailto:` addresses.)
 
 If the **domain that receives those reports has expired**, anyone can register
 it and immediately start receiving that organisation's DMARC reports. That leaks
@@ -79,7 +85,8 @@ rua-tool version
 
 ### With the Go toolchain
 
-Requires Go 1.22 or newer:
+Requires Go 1.26 or newer (older toolchains with the default `GOTOOLCHAIN=auto`
+will fetch it automatically):
 
 ```bash
 go install github.com/joegarbett/rua-tool@latest   # installs to $GOBIN
