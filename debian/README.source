@@ -29,6 +29,9 @@ version `golang-golang-x-net-dev` provides in the target suite will work.
 
 Validation status
 -----------------
-The debian/ metadata parses cleanly (dpkg-parsechangelog, Dpkg::Control) but has
-not been through a full sbuild + lintian run upstream. Please build and lint on
-a Kali builder; see docs/kali-submission.md for the commands.
+Built locally with `dpkg-buildpackage -b` using Debian's golang-go (1.22) in
+GOPATH mode against golang-golang-x-net-dev 1:0.21.0 (so neither Go 1.26 nor the
+pinned x/net was needed). lintian reports only `initial-upload-closes-no-bugs`
+(expected for a first package, ignorable for a non-Debian target); the binary is
+built with -buildmode=pie. Please still run a final sbuild + lintian on a Kali
+builder with the kali vendor profile; see docs/kali-submission.md.
