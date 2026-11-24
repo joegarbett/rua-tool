@@ -1,5 +1,10 @@
 # rua-tool
 
+[![CI](https://github.com/joegarbett/rua-tool/actions/workflows/ci.yml/badge.svg)](https://github.com/joegarbett/rua-tool/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/joegarbett/rua-tool?sort=semver)](https://github.com/joegarbett/rua-tool/releases/latest)
+[![Go Reference](https://pkg.go.dev/badge/github.com/joegarbett/rua-tool.svg)](https://pkg.go.dev/github.com/joegarbett/rua-tool)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Find domains whose **DMARC reporting addresses point at an expired (unregistered) domain**, then spider websites to surface more of them for responsible disclosure to the affected webmasters.
 
 A single static Go binary — no runtime dependencies.
