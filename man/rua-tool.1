@@ -1,0 +1,120 @@
+.TH RUA\-TOOL 1 "2026-11-24" "rua-tool" "User Commands"
+.SH NAME
+rua\-tool \- find DMARC reports pointed at expired domains and disclose them
+.SH SYNOPSIS
+.B rua\-tool
+.I command
+.RI [ arguments ]
+.RI [ options ]
+.SH DESCRIPTION
+.B rua\-tool
+inspects the DMARC record published at
+.IR _dmarc. <domain>
+and checks the domains that its aggregate
+.RB ( rua )
+and forensic
+.RB ( ruf )
+reports are sent to. If a report address points at a
+.B registrable domain that is unregistered
+(or about to expire), an attacker could register it and begin receiving that
+organisation's DMARC reports \(em leaking mail infrastructure and aiding
+spoofing. The tool can scan a single domain, spider a site to harvest and scan
+many domains, and draft responsible\-disclosure notices for the affected
+webmasters.
+.PP
+Report addresses are reduced to their registrable domain (eTLD+1) via the
+Public Suffix List before checking, so
+.I x@sub.example.co.uk
+is checked as
+.IR example.co.uk .
+Registration is checked with RDAP (falling back to DNS when RDAP is
+inconclusive). All lookups are read\-only and the tool never sends mail.
+.SH COMMANDS
+.TP
+.BI "check " domain
+Look up a domain's DMARC record and check its rua/ruf report domains.
+.TP
+.BI "spider " url
+Crawl a site within its own registrable domain, harvest every referenced
+domain, and scan each one.
+.TP
+.BI "scan\-list " file
+Scan a newline\-delimited list of domains (blank lines and # comments ignored).
+.TP
+.B list
+Show stored findings.
+.TP
+.BI "contact " domain
+Discover a responsible\-disclosure contact (security.txt, then RDAP, then role
+accounts).
+.TP
+.B report
+Write disclosure e\-mail drafts for stored findings.
+.TP
+.B version
+Print the build version.
+.SH OPTIONS
+.TP
+.B \-\-json
+Machine\-readable output (check, spider, list).
+.TP
+.BR \-\-save ", " \-\-no\-save
+Persist (or skip persisting) findings to the store. spider and scan\-list save
+by default.
+.TP
+.BI \-\-max\-pages= N
+Spider: maximum pages to crawl (default 25; 0 = unlimited).
+.TP
+.BI \-\-max\-depth= N
+Spider: maximum link depth (default 2; 0 = unlimited).
+.TP
+.BI \-\-delay= SEC
+Spider: politeness delay between requests in seconds (default 0.5).
+.TP
+.BI \-\-domain= X
+report: only build drafts for this scanned domain.
+.TP
+.BI \-\-out= DIR
+report: output directory (default ./reports).
+.TP
+.BI \-\-from= NAME
+report: sign\-off name in the drafts.
+.SH EXIT STATUS
+.TP
+.B 0
+Success, no findings.
+.TP
+.B 1
+Runtime error.
+.TP
+.B 2
+Usage error.
+.TP
+.B 3
+One or more findings present.
+.SH ENVIRONMENT
+.TP
+.B RUA_STORE
+Path to the findings JSON store (default ./rua-findings.json).
+.TP
+.B NO_COLOR
+Disable coloured output.
+.SH EXAMPLES
+.TP
+Check one domain:
+.B rua\-tool check example.com
+.TP
+Spider a site with no page limit:
+.B rua\-tool spider https://example.com \-\-max\-pages=0
+.TP
+Draft disclosure notices for everything found:
+.B rua\-tool report \-\-from="Your Name"
+.SH FILES
+.TP
+.I ./rua-findings.json
+Default findings store (override with
+.BR RUA_STORE ).
+.SH SEE ALSO
+RFC 7489 (DMARC). Project home: https://github.com/joegarbett/rua-tool
+.SH AUTHOR
+Joseph Garbett

@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+
+# Built with the dh golang buildsystem (dh-sequence-golang). Dependencies are
+# taken from the Debian-packaged Go libraries (golang-golang-x-net-dev) rather
+# than fetched from the network, so the build is offline and reproducible.
+
+%:
+	dh $@ --builddirectory=_build --buildsystem=golang
+
+# Do not ship the Go source in the binary package; we only want the binary.
+override_dh_auto_install:
+	dh_auto_install -- --no-source

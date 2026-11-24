@@ -1,0 +1,33 @@
+Source: rua-tool
+Section: utils
+Priority: optional
+Maintainer: Joseph Garbett <joseph@garbott.co.uk>
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-sequence-golang,
+ golang-any,
+ golang-golang-x-net-dev,
+Standards-Version: 4.7.0
+Homepage: https://github.com/joegarbett/rua-tool
+Vcs-Browser: https://github.com/joegarbett/rua-tool
+Vcs-Git: https://github.com/joegarbett/rua-tool.git
+XS-Go-Import-Path: github.com/joegarbett/rua-tool
+Rules-Requires-Root: no
+
+Package: rua-tool
+Architecture: any
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+Built-Using: ${misc:Built-Using}
+Description: find DMARC reports pointed at expired (unregistered) domains
+ rua-tool inspects the DMARC record published at _dmarc.<domain> and checks the
+ domains that its aggregate (rua) and forensic (ruf) reports are sent to. If a
+ report address points at a registrable domain that is unregistered or about to
+ expire, an attacker could register it and begin receiving that organisation's
+ DMARC reports, leaking mail infrastructure and aiding spoofing.
+ .
+ The tool can check a single domain, spider a site to harvest and scan many
+ domains, discover a responsible-disclosure contact, and draft notices for the
+ affected webmasters. All lookups are read-only (DNS, RDAP, HTTP GET) and it
+ never sends mail.

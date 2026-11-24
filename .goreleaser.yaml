@@ -74,6 +74,8 @@ nfpms:
         dst: /usr/share/doc/rua-tool/LICENSE
       - src: README.md
         dst: /usr/share/doc/rua-tool/README.md
+      - src: man/rua-tool.1
+        dst: /usr/share/man/man1/rua-tool.1
 
 snapshot:
   version_template: "{{ incpatch .Version }}-next"
