@@ -4,8 +4,16 @@
 # taken from the Debian-packaged Go libraries (golang-golang-x-net-dev) rather
 # than fetched from the network, so the build is offline and reproducible.
 
+# Upstream version from the changelog, stamped into `rua-tool version`.
+UPSTREAM_VERSION := $(shell dpkg-parsechangelog -S Version | sed 's/-[^-]*$$//')
+
 %:
 	dh $@ --builddirectory=_build --buildsystem=golang
+
+# Build a position-independent executable so the binary benefits from ASLR
+# (clears lintian hardening-no-pie), and stamp the version.
+override_dh_auto_build:
+	dh_auto_build -- -buildmode=pie -ldflags "-X main.version=$(UPSTREAM_VERSION)"
 
 # Do not ship the Go source in the binary package; we only want the binary.
 override_dh_auto_install:
