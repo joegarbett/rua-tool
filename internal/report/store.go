@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/garbott/rua-tool/internal/scan"
+	"github.com/joegarbett/rua-tool/internal/scan"
 )
 
 // Store is an append-only JSON store of findings, keyed so the same issue is

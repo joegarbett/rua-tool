@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/garbott/rua-tool/internal/fetch"
+	"github.com/joegarbett/rua-tool/internal/fetch"
 )
 
 // Contact holds discovered disclosure contacts for a domain.

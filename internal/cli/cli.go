@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/garbott/rua-tool/internal/report"
-	"github.com/garbott/rua-tool/internal/scan"
-	"github.com/garbott/rua-tool/internal/spider"
+	"github.com/joegarbett/rua-tool/internal/report"
+	"github.com/joegarbett/rua-tool/internal/scan"
+	"github.com/joegarbett/rua-tool/internal/spider"
 )
 
 // Exit codes.
@@ -22,6 +22,16 @@ const (
 	exitUsage    = 2
 	exitFindings = 3
 )
+
+// BuildInfo carries version metadata stamped in at build time.
+type BuildInfo struct {
+	Version string
+	Commit  string
+	Date    string
+}
+
+// Build is set from package main before Run is called.
+var Build = BuildInfo{Version: "dev", Commit: "none", Date: "unknown"}
 
 // parseFlags parses flags that may appear before, after, or interspersed with
 // positional arguments (Go's flag package stops at the first positional), and
@@ -88,6 +98,9 @@ func Run(args []string) int {
 		return a.contact(rest)
 	case "report":
 		return a.report(rest)
+	case "version", "--version", "-v":
+		a.out.Line("rua-tool " + Build.Version + " (commit " + Build.Commit + ", built " + Build.Date + ")")
+		return exitOK
 	case "help", "-h", "--help":
 		return a.help()
 	default:
@@ -446,6 +459,7 @@ func (a *app) help() int {
 	a.out.Line("  list                  Show stored findings.")
 	a.out.Line("  contact <domain>      Discover a responsible-disclosure contact.")
 	a.out.Line("  report                Write disclosure e-mail drafts for stored findings.")
+	a.out.Line("  version               Print the build version.")
 	a.out.Line("")
 	a.out.Line(b("OPTIONS"))
 	a.out.Line("  --json                Machine-readable output (check/spider/list).")

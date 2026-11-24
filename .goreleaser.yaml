@@ -1,0 +1,96 @@
+# GoReleaser configuration — https://goreleaser.com
+# Builds cross-platform binaries, archives, checksums and Linux packages
+# (.deb / .rpm), and publishes them as a GitHub Release on each vX.Y.Z tag.
+version: 2
+
+project_name: rua-tool
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./...
+
+builds:
+  - id: rua-tool
+    main: .
+    binary: rua-tool
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{ .Version }}
+      - -X main.commit={{ .Commit }}
+      - -X main.date={{ .Date }}
+
+archives:
+  - id: default
+    ids:
+      - rua-tool
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: "checksums.txt"
+
+# Linux packages — this is what makes `rua-tool` installable on Kali/Debian
+# (.deb) and on Fedora/RHEL (.rpm).
+nfpms:
+  - id: packages
+    package_name: rua-tool
+    ids:
+      - rua-tool
+    vendor: Joseph Garbett
+    homepage: https://github.com/joegarbett/rua-tool
+    maintainer: Joseph Garbett <joseph@garbott.co.uk>
+    description: |-
+      Find DMARC rua/ruf reporting addresses that point at expired
+      (unregistered) domains, spider sites to surface more, and draft
+      responsible-disclosure notices for webmasters.
+    license: MIT
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/bin
+    section: utils
+    priority: optional
+    contents:
+      - src: LICENSE
+        dst: /usr/share/doc/rua-tool/LICENSE
+      - src: README.md
+        dst: /usr/share/doc/rua-tool/README.md
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+
+release:
+  draft: false
+  prerelease: auto
+  footer: |
+    ---
+    **Kali / Debian / Ubuntu**: download the `.deb` below and run
+    `sudo apt install ./rua-tool_{{ .Version }}_linux_amd64.deb`
+    (use `arm64` on ARM machines).

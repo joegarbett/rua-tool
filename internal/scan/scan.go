@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/garbott/rua-tool/internal/dmarc"
-	"github.com/garbott/rua-tool/internal/domain"
-	"github.com/garbott/rua-tool/internal/psl"
+	"github.com/joegarbett/rua-tool/internal/dmarc"
+	"github.com/joegarbett/rua-tool/internal/domain"
+	"github.com/joegarbett/rua-tool/internal/psl"
 )
 
 // Severity levels for a finding.

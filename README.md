@@ -41,18 +41,66 @@ asks whether that domain is still registered.
 
 A domain that reports only to itself is never flagged (nothing to take over).
 
-## Build & install
+## Install
 
-Requires Go 1.22 or newer.
+### Download a prebuilt binary (no Go needed)
+
+Grab the archive for your OS/arch from the [latest release](https://github.com/joegarbett/rua-tool/releases/latest),
+unpack it, and run `rua-tool`:
 
 ```bash
-go build -o rua-tool .      # build the binary
-go install ./...            # or install to $GOBIN
-./rua-tool help
+# Linux x86-64 example — check the release page for the current version
+curl -fsSL -o rua-tool.tar.gz \
+  https://github.com/joegarbett/rua-tool/releases/latest/download/rua-tool_0.1.0_linux_amd64.tar.gz
+tar -xzf rua-tool.tar.gz
+./rua-tool version
+```
+
+Builds are published for Linux, macOS and Windows on both `amd64` and `arm64`.
+Each release also ships `checksums.txt` so you can verify downloads.
+
+### Kali / Debian / Ubuntu (`.deb`)
+
+Download the `.deb` for your architecture from the release page and install it —
+this puts `rua-tool` on your `PATH` at `/usr/bin/rua-tool`:
+
+```bash
+sudo apt install ./rua-tool_0.1.0_linux_amd64.deb   # use _arm64 on ARM
+rua-tool version
+```
+
+(`dpkg -i rua-tool_*.deb` works too.) Fedora/RHEL users can use the matching
+`.rpm`: `sudo dnf install ./rua-tool_0.1.0_linux_amd64.rpm`.
+
+### With the Go toolchain
+
+Requires Go 1.22 or newer:
+
+```bash
+go install github.com/joegarbett/rua-tool@latest   # installs to $GOBIN
+# or from a checkout:
+go build -o rua-tool . && ./rua-tool help
 ```
 
 The only external module is `golang.org/x/net` (Public Suffix List + HTML
 parser). Refresh the PSL snapshot with `go get -u golang.org/x/net`.
+
+## Releasing
+
+Releases are automated with [GoReleaser](https://goreleaser.com) via GitHub
+Actions. Pushing a semver tag builds every artifact and publishes a GitHub
+Release:
+
+```bash
+git tag -a v0.2.0 -m "v0.2.0"
+git push origin v0.2.0
+```
+
+To dry-run the whole thing locally (binaries + `.deb`/`.rpm` into `dist/`):
+
+```bash
+goreleaser release --snapshot --clean --skip=publish
+```
 
 ## Commands
 

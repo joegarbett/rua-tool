@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	defaultUserAgent = "rua-tool/1.0 (+https://github.com/garbott/rua-tool; DMARC hygiene research)"
+	defaultUserAgent = "rua-tool/1.0 (+https://github.com/joegarbett/rua-tool; DMARC hygiene research)"
 	defaultTimeout   = 15 * time.Second
 	defaultMaxBytes  = 2 << 20 // 2 MiB
 )

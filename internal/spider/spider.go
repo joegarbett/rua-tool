@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/garbott/rua-tool/internal/fetch"
-	"github.com/garbott/rua-tool/internal/psl"
+	"github.com/joegarbett/rua-tool/internal/fetch"
+	"github.com/joegarbett/rua-tool/internal/psl"
 
 	"golang.org/x/net/html"
 )

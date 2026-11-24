@@ -1,4 +1,4 @@
-module github.com/garbott/rua-tool
+module github.com/joegarbett/rua-tool
 
 go 1.22.0
 

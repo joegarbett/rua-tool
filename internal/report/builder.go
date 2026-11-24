@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/garbott/rua-tool/internal/scan"
+	"github.com/joegarbett/rua-tool/internal/scan"
 )
 
 // Draft is a reviewable disclosure notice. The tool never sends mail — a human

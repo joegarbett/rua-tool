@@ -3,8 +3,8 @@ package scan
 import (
 	"testing"
 
-	"github.com/garbott/rua-tool/internal/dmarc"
-	"github.com/garbott/rua-tool/internal/domain"
+	"github.com/joegarbett/rua-tool/internal/dmarc"
+	"github.com/joegarbett/rua-tool/internal/domain"
 )
 
 // fakeResolver serves canned DMARC TXT records.
